@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location finder <3</title>
+
+    <!-- 3rd party styles / css bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css' type='text/css' />
+
+</head>
+<body style="background-color: rgb(247, 221, 247);">
+    <!-- header -->
+    <header class="bg-dark p-2">
+        <div class="container">
+            <h2 class="text-light">Locate any place!</h2>
+            <h6 style="color: aliceblue;">Made by Abdallah hdaib</h6>
+        </div>
+        
+    </header>
+
+    <div class="splash">
+        <spacer class="fade-in">Search for any place you have in mind!</spacer>
+        <spacer class="fade-in">Anytime. Anywhere.</spacer>
+    </div>
+
+<main class="pt-2">
+    <div class="container">
+        <div id="map">
+            
+        </div>
+    </div>
+</main>
+    <!-- footer -->
+    
+
+    <!--3rd party script-->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.js'></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js'></script>
+
+    <script>
+
+        //Splash screen
+        const splash = document.querySelector('.splash');
+
+        document.addEventListener('DOMContentLoaded', (e)=>{
+            setTimeout(()=>{
+                splash.classList.add('display-none');
+            }, 2000);
+        })
+        //END OF Splash screen
+
+        mapboxgl.accessToken = 'pk.eyJ1IjoiYWJkYWxsYWhoZGFpYiIsImEiOiJjbGNkamY1ZXgwMXNmM3NrNXd6ZWpqbXRwIn0.1XRtICeEvutNv3OFUOxFAg';
+        
+        //initializer of the map
+        const map = new mapboxgl.Map({
+        container: 'map', // container ID
+        style: 'mapbox://styles/mapbox/outdoors-v12', // style URL
+        center: [36.238415, 30.585163], // starting position [lng, lat]
+        zoom: 6, // starting zoom
+        });
+
+        //geocoder
+        const geocoder = new MapboxGeocoder({
+        // Initialize of the geocoder
+        accessToken: mapboxgl.accessToken, // set the access token
+        mapboxgl: mapboxgl, // declare the mapbox-gl instance
+        marker: true,
+        });
+
+        let searchedPlaceName;
+        let searchedPlaceCoor0;
+        let searchedPlaceCoor1;
+
+        // Add the geocoder to the map
+        map.addControl(geocoder);
+
+        geocoder.on('result', function (ev) {
+        console.log(ev)
+        // Get the input from the search bar
+
+        searchedPlaceName = ev.result.place_name;
+        searchedPlaceCoor0 = ev.result.geometry.coordinates[0];
+        searchedPlaceCoor1 = ev.result.geometry.coordinates[1];
+
+        // Use the search input for whatever purpose you need
+        console.log(searchedPlaceName);
+        console.log(searchedPlaceCoor0);
+        console.log(searchedPlaceCoor1);
+        });
+
+ //----------
+
+        const apiKey = 'pk.eyJ1IjoiYWJkYWxsYWhoZGFpYiIsImEiOiJjbGNkamY1ZXgwMXNmM3NrNXd6ZWpqbXRwIn0.1XRtICeEvutNv3OFUOxFAg';
+        //const searchQuery = searchedPlaceName;
+
+        //const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchedPlaceName}.json?access_token=${apiKey}`;
+        
+
+//         fetch(geocodeUrl)
+//             .then(response => response.json())
+//             .then(data => {
+//                 searchedPlaceCoor0 = data.features[0].center[1];
+//                 searchedPlaceCoor1 = data.features[0].center[0];
+//                 console.log(`Latitude: ${searchedPlaceCoor0}, Longitude: ${searchedPlaceCoor1}`);
+//             });
+
+
+        const weatherApiKey = 'ed0175931aa77df1f387215dde5d5a1e';
+
+//         console.log("coor 0 "+searchedPlaceCoor0);
+//         console.log("coor 1 "+searchedPlaceCoor1);
+
+        
+
+        const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${searchedPlaceCoor0}&lon=${searchedPlaceCoor1}&appid=${weatherApiKey}`;
+
+        var temp; 
+        var desc;
+        
+        </script>   
+
+        <div class="float-left">
+            <button class="btn btn-primary" id="btn-id" type="submit" onclick="showInfo()">Get Info</button>
+        </div>
+
+        <div class="container">
+            <div class="float-left">
+                <small><p style="font-family: Montserrat;" class="pData"><small>Place Name:</p></small><small><p id="name"></p></small>
+            </div>
+
+            <div class="float-left">
+                <small><p style="font-family: Montserrat;" class="pData">Coordinates:</p></small><small><p id="coor"></p></small>
+            </div>
+
+            <div class="float-left">
+                <small><p style="font-family: Montserrat;" class="pData">Weather:</p></small><small><p id="weather"></p></small>
+            </div>
+        
+            <div class="float-left">
+                <img width="50px" height="50px" id="weatherPic">
+            </div>
+        </div>
+
+        <script>
+            function showInfo()
+            {
+                const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchedPlaceName}.json?access_token=${apiKey}`;
+                console.log(searchedPlaceName);
+                console.log(geocodeUrl);
+
+                        fetch(geocodeUrl)
+            .then(response => response.json())
+            .then(data => {
+                searchedPlaceCoor0 = data.features[0].center[1];
+                searchedPlaceCoor1 = data.features[0].center[0];
+                console.log(`Latitude: ${searchedPlaceCoor0}, Longitude: ${searchedPlaceCoor1}`);
+            });
+
+            const weatherApiKey = 'ed0175931aa77df1f387215dde5d5a1e';
+            const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${searchedPlaceCoor0}&lon=${searchedPlaceCoor1}&appid=${weatherApiKey}`;
+                //console.log("weather api URL: "+weatherUrl);
+                //console.log(searchedPlaceCoor0 + ', ' + searchedPlaceCoor1);
+                document.getElementById('name').innerHTML = searchedPlaceName;
+                document.getElementById('coor').innerHTML = searchedPlaceCoor0 + ", " + searchedPlaceCoor1;
+                document.getElementById('weather').innerHTML = temp +", "+ desc;
+
+                try{
+                fetch(weatherUrl)
+                .then(response => response.json())
+                .then(data => {
+                    temp = data.main.temp;
+                    desc = data.weather[0].description;
+                    console.log(`It is currently ${temp} degrees and ${desc}.`);
+                });
+            }
+            catch(e)
+            {
+                console.log(e);
+            }
+
+            var weatherSunny = "sunny.png";
+            var weatherCloudy = "cloudy.png";
+            var weatherRainy = "rainy.png";
+
+            if(desc.includes("sunny") || desc.includes("sky"))
+            {
+                document.getElementById('weatherPic').src = weatherSunny;
+            }
+
+            else if(desc.includes("rain"))
+            {
+                document.getElementById('weatherPic').src = weatherRainy;
+            }
+
+            else if(desc.includes("clouds"))
+            {
+                document.getElementById('weatherPic').src = weatherCloudy;
+            }
+        }
+        </script>
+      
+</body>
+</html>
